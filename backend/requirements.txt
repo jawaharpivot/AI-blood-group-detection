@@ -7,4 +7,3 @@ tensorflow==2.13.0
 python-dotenv
 pymongo
 dnspython
-tflite-runtime
