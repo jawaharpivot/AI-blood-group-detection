@@ -1,0 +1,122 @@
+import { useMemo, useState } from 'react'
+import { apiUrl } from '../api'
+
+type ApiErrorPayload = { error?: string }
+
+type CellsResult = {
+  rbcPercentage: number
+  wbcPercentage: number
+  totalCells: number
+  rbcCount: number
+  wbcCount: number
+  overlayPngBase64?: string
+  notes: string[]
+}
+
+export function CellsAnalyzer() {
+  const [file, setFile] = useState<File | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [result, setResult] = useState<CellsResult | null>(null)
+
+  const previewUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file])
+
+  async function onAnalyze() {
+    setError(null)
+    setResult(null)
+    if (!file) {
+      setError('Please choose a microscope image.')
+      return
+    }
+    setBusy(true)
+    try {
+      const form = new FormData()
+      form.append('image', file)
+      const res = await fetch(apiUrl('/api/analyze/cells'), { method: 'POST', body: form })
+      const data: unknown = await res.json()
+      const payload = data as ApiErrorPayload
+      if (!res.ok) {
+        setError(payload?.error ?? 'Request failed')
+        return
+      }
+      setResult((data as any).analysis ?? (data as any))
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Network error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const overlayUrl = useMemo(() => {
+    if (!result?.overlayPngBase64) return null
+    return `data:image/png;base64,${result.overlayPngBase64}`
+  }, [result])
+
+  return (
+    <div className="panel">
+      <div className="panelHeader">
+        <div>
+          <h2 className="h2">RBC / WBC Relative Levels</h2>
+          <p className="muted">
+            Upload a microscope image. RBC and WBC levels are shown as percentages of total cells counted.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid2">
+        <div className="card">
+          <div className="field">
+            <label className="label">Microscope image</label>
+            <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+          </div>
+          {previewUrl ? (
+            <div className="previewWrap">
+              <img className="preview" src={previewUrl} alt="preview" />
+            </div>
+          ) : (
+            <div className="previewEmpty">No image selected</div>
+          )}
+          <button className="primary" onClick={onAnalyze} disabled={busy || !file} type="button">
+            {busy ? 'Calculating...' : 'Analyze Sample'}
+          </button>
+          {error ? <div className="errorBox">{error}</div> : null}
+        </div>
+
+        <div className="card">
+          {!result ? (
+            <div className="muted">Results will appear here.</div>
+          ) : (
+            <>
+              <div className="resultTop">
+                <div className="resultMeta">
+                  <div>
+                    <div className="k">Total Cells Found</div>
+                    <div className="v" style={{ fontSize: '1.5rem' }}>{result.totalCells}</div>
+                  </div>
+                  <div>
+                    <div className="k">RBC Level (%)</div>
+                    <div className="v" style={{ fontSize: '2rem', color: '#cb2431' }}>{result.rbcPercentage}%</div>
+                  </div>
+                  <div>
+                    <div className="k">WBC Level (%)</div>
+                    <div className="v" style={{ fontSize: '2rem', color: '#6f42c1' }}>{result.wbcPercentage}%</div>
+                  </div>
+                </div>
+              </div>
+              <div className="hr" />
+              {overlayUrl ? (
+                <div className="previewWrap">
+                  <p className="small muted center">Detection Overlay (Green: RBC, Pink: WBC)</p>
+                  <img className="preview" src={overlayUrl} alt="overlay" />
+                </div>
+              ) : null}
+              <ul className="muted small">
+                {result.notes.map((n) => <li key={n}>{n}</li>)}
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
