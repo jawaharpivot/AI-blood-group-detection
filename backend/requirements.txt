@@ -1,9 +1,10 @@
 flask
 flask-cors
-numpy
+numpy==1.24.3
 pillow
 opencv-python
-tensorflow
+tensorflow==2.13.0
 python-dotenv
 pymongo
 dnspython
+tflite-runtime
