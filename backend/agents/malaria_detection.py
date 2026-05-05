@@ -5,7 +5,7 @@ import os
 
 # Load model lazily to save memory during startup
 _model = None
-MODEL_PATH = r"D:\Blood Group Project\AI-blood-group-detection-main\Malaria-master\Malaria-master\model.h5"
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "Malaria-master", "Malaria-master", "model.h5")
 
 def get_model():
     global _model

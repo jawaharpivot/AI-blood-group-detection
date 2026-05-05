@@ -7,7 +7,7 @@ import os
 
 # Load model lazily
 _model = None
-MODEL_PATH = r"D:\Blood Group Project\AI-blood-group-detection-main\Blood-Cancer-Detection-CNN-master\Blood-Cancer-Detection-CNN-master\mymodel.h5"
+MMODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "Blood-Cancer-Detection-CNN-master", "Blood-Cancer-Detection-CNN-master", "mymodel.h5")
 
 def create_legacy_model():
     """
