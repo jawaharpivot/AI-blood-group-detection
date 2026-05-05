@@ -26,8 +26,7 @@ from utils.mongodb import db_manager
 
 app = flask.Flask(__name__)
 # Enable CORS for the specific origins used in development
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000"]}})
-
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://localhost:5174", "http://localhost:3000", "https://ai-blood-group-detection.vercel.app", "https://ai-blood-group-detection-6y2ip2ho0-jawaharpivots-projects.vercel.app"]}})
 @app.errorhandler(Exception)
 def handle_exception(e):
     import traceback
