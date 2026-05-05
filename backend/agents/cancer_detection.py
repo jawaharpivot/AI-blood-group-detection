@@ -17,14 +17,13 @@ def create_legacy_model():
     """
     model = keras.Sequential([
         layers.Input(shape=(150, 150, 3)), # Interpreted as (C, H, W)
-        layers.Conv2D(16, (3, 3), activation='relu', padding="same", data_format='channels_first'),
-        layers.Conv2D(16, (3, 3), padding="same", activation='relu', data_format='channels_first'),
-        layers.Conv2D(32, (3, 3), activation='relu', padding="same", data_format='channels_first'),
-        layers.Conv2D(32, (3, 3), padding="same", activation='relu', data_format='channels_first'),
-        layers.Conv2D(64, (3, 3), activation='relu', padding="same", data_format='channels_first'),
-        layers.Conv2D(64, (3, 3), padding="same", activation='relu', data_format='channels_first'),
-        layers.MaxPooling2D(pool_size=(2, 2), data_format='channels_first'),
-        layers.Flatten(),
+        layers.Conv2D(16, (3, 3), activation='relu', padding="same"),
+layers.Conv2D(16, (3, 3), padding="same", activation='relu'),
+layers.Conv2D(32, (3, 3), activation='relu', padding="same"),
+layers.Conv2D(32, (3, 3), padding="same", activation='relu'),
+layers.Conv2D(64, (3, 3), activation='relu', padding="same"),
+layers.Conv2D(64, (3, 3), padding="same", activation='relu'),
+layers.MaxPooling2D(pool_size=(2, 2)),layers.Flatten(),
         layers.Dense(64, activation='relu'),
         layers.Dropout(0.2),
         layers.Dense(2, activation='sigmoid')
