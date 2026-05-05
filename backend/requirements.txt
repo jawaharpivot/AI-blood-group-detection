@@ -4,6 +4,7 @@ numpy==1.24.3
 pillow
 opencv-python
 tensorflow==2.13.0
+tflite-runtime==2.13.0
 python-dotenv
 pymongo
 dnspython
